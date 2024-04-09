@@ -1,0 +1,50 @@
+{% load custom_filters %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>iPad Availability</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h1>iPad Availability</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Period</th>
+                {% for date in availability.keys %}
+                <th>{{ date|date:"D, M d" }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for period in availability.values.0.keys %}
+            <tr>
+                <td>{{ period }}</td>
+                {% for date in availability.keys %}
+                <td>
+                    {% for booking in availability|get_item:date|get_item:period|get_item:'bookings' %}
+                        {{ booking.teacher.name }} ({{ booking.num_ipads }})<br>
+                    {% endfor %}
+                    Available: {{ availability|get_item:date|get_item:period|get_item:'available' }}
+                </td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <br>
+    <a href="{% url 'book_ipad' %}">Book iPad</a>
+</body>
+</html>
